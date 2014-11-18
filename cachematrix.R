@@ -1,37 +1,38 @@
 ## Coursera programming assignment 2
-## Calculate inverse matrix with functions in this file
-## The function do not function as they are supposed to, but I am striving for partial credit
-## for submitting the correct link and SHA-1, and for submitting a code and comments.
+## Calculate inverse matrix with functions in this file using cache
 
-## makeCacheMatrix is a list of functions
-##to make and manipulate a cache matrix
+## makeCacheMatrix is a list of 4 functions
+## these help manage the two inverse values (one in local, other in global envrironment)
+## Also displays the matrix and its inverse to screen.
 
-makeCacheMatrix <- function(x) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    m <<- NULL
+makeCacheMatrix <- function(x = matrix()) {
+  inv <- NULL 
+  set <- function(y) { # caches the inverse globally
+          x <<- y
+          inv <<- NULL
   }
-    get <- function() x
-    setinverse <- function(inverse) inv <<- solve(x)
-    getinverse <- function() inv
+    
+  get <- function() x # returns original matrix
+  setinverse <- function(inverse) inv <<- inverse 
+  getinverse <- function() inv # returns inverse of matrix
     list(set = set, get = get,
          setinverse = setinverse,
          getinverse = getinverse)
 }
 
-
-## CacheSolve calculates the inverse matrix using the built-in solve(x) function
+## cacheSolve calculates the inverse of matrix unless the 
+## inverse is already available in the cache. It evokes the
+## functions encompassed in makeCacheMatrix
 
 cacheSolve <- function(x, ...) {
   inv <- x$getinverse()
   if(!is.null(inv)) {
-    message("getting cached data")
-    return(inv)
+    message ("getting cached data")
+    return(inv)  
   }
-  data <- x$get()
-  inv <- solve(x)
-  x$setinverse(inv)
-  inv
-
+      data <- x$get() ## data is a dummy variable for performing the calculation
+      inv <- solve(data,...) ## solve-function automatically calculates inverse
+      x$setinverse(inv) ## the inverse is forwarded to another function defined in makeCacheMatrix
+      inv ## display
 }
+
